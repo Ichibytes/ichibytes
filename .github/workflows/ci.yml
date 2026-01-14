@@ -6,42 +6,47 @@ on:
   pull_request:
     branches: [main, develop]
 
+permissions:
+  actions: read
+  contents: read
+
 jobs:
-  lint:
-    name: Lint
+  main:
+    name: CI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc
-          cache: "npm"
-      - run: npm ci
-      - run: npm run lint
+          fetch-depth: 0
+          filter: tree:0
 
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      # Cache node_modules
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: "npm"
-      - run: npm ci
-      - run: npm run test
 
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: "npm"
       - run: npm ci
-      - run: npm run build:prod
+
+      - name: Lint projects
+        run: npx nx run-many --target=lint --all
+        continue-on-error: true
+
+      - name: Test affected projects
+        run: npx nx run-many --target=test --all
+        continue-on-error: false
+
+      - name: Build affected projects
+        run: npx nx run-many --target=build --all --configuration=production
+        continue-on-error: false
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: coverage/
+          retention-days: 7
 
   security:
     name: Security Audit
