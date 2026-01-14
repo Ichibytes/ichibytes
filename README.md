@@ -28,7 +28,7 @@ It's built using Nx Workspace and the following technologies:
 
 <div align="center">
   <p><strong>Tech Stack</strong></p>
-  <img src="https://skillicons.dev/icons?i=typescript,vite,nestjs,nextjs,postgresql,prisma,tailwindcss,docker" alt="TechStack" width="100%" />
+  <img src="https://skillicons.dev/icons?i=typescript,react,vite,nestjs,nextjs,postgresql,prisma,tailwindcss,docker,githubactions,jest,vitest" alt="TechStack" />
 </div>
 
 <br />
