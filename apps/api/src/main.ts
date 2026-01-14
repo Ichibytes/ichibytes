@@ -71,11 +71,11 @@ async function bootstrap() {
 
   const logger = new Logger("Bootstrap");
   logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+    `Application is running on: http://localhost:${port}/${globalPrefix}`
   );
-  logger.log(`📚 API Version: v1`);
-  logger.log(`🌍 CORS enabled for: ${allowedOrigins.join(", ")}`);
-  logger.log(`🔧 Environment: ${process.env.NODE_ENV || "development"}`);
+  logger.log(`API Version: v1`);
+  logger.log(`CORS enabled for: ${allowedOrigins.join(", ")}`);
+  logger.log(`Environment: ${process.env.NODE_ENV || "development"}`);
 }
 
 bootstrap();

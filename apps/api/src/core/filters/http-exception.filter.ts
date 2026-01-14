@@ -40,8 +40,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
           ? responseObj.message
           : undefined;
       }
+
+      // Only log 5xx errors here (4xx are logged by middleware as warnings)
+      // This prevents duplicate logging since middleware already logs all requests
+      if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
+        this.logger.error(
+          `${request.method} ${request.url} - ${status} - ${message}`,
+          exception.stack
+        );
+      }
     } else if (exception instanceof Error) {
       message = exception.message;
+      // Log unhandled exceptions (non-HttpException errors)
       this.logger.error(
         `Unhandled exception: ${exception.message}`,
         exception.stack
@@ -56,10 +66,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message,
       ...(errors && { errors }),
     };
-
-    this.logger.error(
-      `${request.method} ${request.url} - ${status} - ${message}`
-    );
 
     response.status(status).json(errorResponse);
   }

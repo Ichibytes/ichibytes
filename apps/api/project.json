@@ -50,14 +50,17 @@
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "api:build",
-        "runBuildTargetDependencies": false
+        "runBuildTargetDependencies": false,
+        "inspect": false
       },
       "configurations": {
         "development": {
-          "buildTarget": "api:build:development"
+          "buildTarget": "api:build:development",
+          "inspect": false
         },
         "production": {
-          "buildTarget": "api:build:production"
+          "buildTarget": "api:build:production",
+          "inspect": false
         }
       }
     },
