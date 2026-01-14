@@ -5,4 +5,6 @@ export * from "./guards/roles.guard";
 export * from "./decorators/public.decorator";
 export * from "./decorators/roles.decorator";
 export * from "./decorators/current-user.decorator";
+export * from "./decorators/skip-throttle.decorator";
 export * from "./strategies/jwt.strategy";
+export * from "./pipes/sanitize.pipe";

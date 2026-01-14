@@ -2,11 +2,27 @@ import { Logger, ValidationPipe, VersioningType } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app/app.module";
 import { HttpExceptionFilter } from "./core/filters/http-exception.filter";
+import helmet from "helmet";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ["error", "warn", "log", "debug", "verbose"],
   });
+
+  // Security Headers (Helmet)
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'"],
+          imgSrc: ["'self'", "data:", "https:"],
+        },
+      },
+      crossOriginEmbedderPolicy: false,
+    })
+  );
 
   // Global prefix
   const globalPrefix = "api";
