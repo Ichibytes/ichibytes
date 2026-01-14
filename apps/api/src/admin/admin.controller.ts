@@ -1,4 +1,6 @@
 import { Controller, Get, Version } from "@nestjs/common";
+import { Roles } from "../core/decorators/roles.decorator";
+import { UserRole } from "@prisma/client";
 
 @Controller({
   path: "admin",
@@ -6,6 +8,7 @@ import { Controller, Get, Version } from "@nestjs/common";
 })
 export class AdminController {
   @Get()
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   getAdminInfo() {
     return {
       message: "Admin API endpoint",

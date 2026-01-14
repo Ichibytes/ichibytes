@@ -14,7 +14,8 @@ export class AppController {
       endpoints: {
         public: "/api/v1/public",
         admin: "/api/v1/admin",
-        health: "/api/health",
+        auth: "/api/v1/admin/auth",
+        health: "/api/v1/health",
       },
     };
   }
