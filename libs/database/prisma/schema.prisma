@@ -8,3 +8,243 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// ============================================
+// Enums
+// ============================================
+
+enum UserRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+// ============================================
+// User Model
+// ============================================
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(EDITOR)
+  name         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  posts     Post[]
+  media     Media[]
+  auditLogs AuditLog[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+// ============================================
+// Post Model
+// ============================================
+
+model Post {
+  id          String     @id @default(uuid())
+  title       String
+  slug        String     @unique
+  content     String     @db.Text
+  excerpt     String?    @db.Text
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+  scheduledAt DateTime?
+  authorId    String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags      PostTag[]
+  revisions PostRevision[]
+
+  @@index([slug])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([authorId])
+  @@index([scheduledAt])
+  @@map("posts")
+}
+
+// ============================================
+// Project Model
+// ============================================
+
+model Project {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String   @db.Text
+  featured    Boolean  @default(false)
+  order       Int      @default(0)
+  techStack   String[] // Array of technology names
+  links       Json? // { github?: string, demo?: string, etc. }
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  tags   ProjectTag[]
+  images ProjectImage[]
+
+  @@index([slug])
+  @@index([featured])
+  @@index([order])
+  @@map("projects")
+}
+
+// ============================================
+// Media Model
+// ============================================
+
+model Media {
+  id         String   @id @default(uuid())
+  filename   String
+  url        String
+  mimeType   String
+  size       Int // Size in bytes
+  uploadedBy String
+  createdAt  DateTime @default(now())
+
+  // Relations
+  uploader      User           @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+  projectImages ProjectImage[]
+
+  @@index([uploadedBy])
+  @@index([mimeType])
+  @@map("media")
+}
+
+// ============================================
+// Tag Model
+// ============================================
+
+model Tag {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  posts    PostTag[]
+  projects ProjectTag[]
+
+  @@index([slug])
+  @@index([name])
+  @@map("tags")
+}
+
+// ============================================
+// Post Tag (Many-to-Many)
+// ============================================
+
+model PostTag {
+  id     String @id @default(uuid())
+  postId String
+  tagId  String
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, tagId])
+  @@index([postId])
+  @@index([tagId])
+  @@map("post_tags")
+}
+
+// ============================================
+// Project Tag (Many-to-Many)
+// ============================================
+
+model ProjectTag {
+  id        String @id @default(uuid())
+  projectId String
+  tagId     String
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, tagId])
+  @@index([projectId])
+  @@index([tagId])
+  @@map("project_tags")
+}
+
+// ============================================
+// Project Image (Many-to-Many)
+// ============================================
+
+model ProjectImage {
+  id        String  @id @default(uuid())
+  projectId String
+  mediaId   String
+  order     Int     @default(0)
+  alt       String?
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  media   Media   @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, mediaId])
+  @@index([projectId])
+  @@index([order])
+  @@map("project_images")
+}
+
+// ============================================
+// Post Revision Model (Versioning)
+// ============================================
+
+model PostRevision {
+  id        String   @id @default(uuid())
+  postId    String
+  content   String   @db.Text
+  excerpt   String?  @db.Text
+  version   Int
+  createdAt DateTime @default(now())
+
+  // Relations
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, version])
+  @@index([postId])
+  @@index([createdAt])
+  @@map("post_revisions")
+}
+
+// ============================================
+// Audit Log Model
+// ============================================
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  userId       String?
+  action       String // create, update, delete, publish, etc.
+  resourceType String // post, project, user, etc.
+  resourceId   String? // Polymorphic reference (no FK constraint)
+  changes      Json? // Store before/after changes
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime @default(now())
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([resourceType, resourceId])
+  @@index([createdAt])
+  @@index([action])
+  @@map("audit_logs")
+}
