@@ -1,5 +1,6 @@
 import { Logger, ValidationPipe, VersioningType } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app/app.module";
 import { HttpExceptionFilter } from "./core/filters/http-exception.filter";
 import { getLogLevels } from "./core/utils/logger.util";
@@ -7,6 +8,7 @@ import helmet from "helmet";
 
 async function bootstrap() {
   const logLevels = getLogLevels();
+  const logger = new Logger("Bootstrap");
   const app = await NestFactory.create(AppModule, {
     logger: logLevels,
   });
@@ -84,10 +86,47 @@ async function bootstrap() {
   // Global Exception Filter
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  // Swagger/OpenAPI Documentation
+  if (process.env.NODE_ENV !== "production") {
+    const config = new DocumentBuilder()
+      .setTitle("Ichibytes API")
+      .setDescription("API documentation for Ichibytes website")
+      .setVersion("1.0")
+      .addServer(`http://localhost:${process.env.PORT || 3000}`, "Development")
+      .addServer("https://api.ichibytes.dev", "Production")
+      .addBearerAuth(
+        {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          name: "JWT",
+          description: "Enter JWT token",
+          in: "header",
+        },
+        "JWT-auth" // This name here is important for matching up with @ApiBearerAuth() in your controller!
+      )
+      .addTag("auth", "Authentication endpoints")
+      .addTag("public", "Public endpoints")
+      .addTag("admin", "Admin endpoints")
+      .addTag("health", "Health check endpoints")
+      .addTag("metrics", "Metrics endpoints")
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup("api/docs", app, document, {
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+    });
+
+    logger.log(
+      `Swagger documentation available at: http://localhost:${process.env.PORT || 3000}/api/docs`
+    );
+  }
+
   const port = process.env.PORT || 3000;
   await app.listen(port);
 
-  const logger = new Logger("Bootstrap");
   logger.log(
     `Application is running on: http://localhost:${port}/${globalPrefix}`
   );

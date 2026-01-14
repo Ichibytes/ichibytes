@@ -36,7 +36,16 @@ export class AuthService {
     return result;
   }
 
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    user: {
+      id: string;
+      email: string;
+      role: string;
+      name?: string;
+    };
+  }> {
     const user = await this.validateUser(loginDto.email, loginDto.password);
 
     const payload: JwtPayload = {
@@ -64,12 +73,14 @@ export class AuthService {
         id: user.id,
         email: user.email,
         role: user.role,
-        name: user.name,
+        name: user.name || undefined,
       },
     };
   }
 
-  async refreshToken(refreshToken: string) {
+  async refreshToken(refreshToken: string): Promise<{
+    accessToken: string;
+  }> {
     try {
       const payload = this.jwtService.verify<JwtPayload>(refreshToken);
 
