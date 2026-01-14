@@ -7,10 +7,13 @@ import {
   Logger,
 } from "@nestjs/common";
 import { Request, Response } from "express";
+import { createStructuredLog, formatLogEntry } from "../utils/logger.util";
+import { metricsCollector } from "../utils/metrics.util";
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
+  private readonly isProduction = process.env.NODE_ENV === "production";
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -41,21 +44,66 @@ export class HttpExceptionFilter implements ExceptionFilter {
           : undefined;
       }
 
-      // Only log 5xx errors here (4xx are logged by middleware as warnings)
-      // This prevents duplicate logging since middleware already logs all requests
+      // Record error metric
+      metricsCollector.increment("http_error", {
+        statusCode: status.toString(),
+        endpoint: request.url,
+        method: request.method,
+      });
+
+      // Log all errors with structured logging
+      const logEntry = createStructuredLog(
+        status >= HttpStatus.INTERNAL_SERVER_ERROR ? "error" : "warn",
+        HttpExceptionFilter.name,
+        `${request.method} ${request.url} - ${status} - ${message}`,
+        {
+          statusCode: status,
+          method: request.method,
+          url: request.url,
+          ip: request.ip,
+          userAgent: request.get("user-agent") || "",
+          ...(errors && { errors }),
+          ...(exception.stack &&
+            status >= HttpStatus.INTERNAL_SERVER_ERROR && {
+              stack: exception.stack,
+            }),
+        }
+      );
+
+      const formattedLog = formatLogEntry(logEntry, this.isProduction);
       if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
-        this.logger.error(
-          `${request.method} ${request.url} - ${status} - ${message}`,
-          exception.stack
-        );
+        this.logger.error(formattedLog);
+      } else {
+        this.logger.warn(formattedLog);
       }
     } else if (exception instanceof Error) {
       message = exception.message;
-      // Log unhandled exceptions (non-HttpException errors)
-      this.logger.error(
+
+      // Record error metric
+      metricsCollector.increment("http_error", {
+        statusCode: status.toString(),
+        endpoint: request.url,
+        method: request.method,
+        type: "unhandled",
+      });
+
+      // Log unhandled exceptions with structured logging
+      const logEntry = createStructuredLog(
+        "error",
+        HttpExceptionFilter.name,
         `Unhandled exception: ${exception.message}`,
-        exception.stack
+        {
+          statusCode: status,
+          method: request.method,
+          url: request.url,
+          ip: request.ip,
+          userAgent: request.get("user-agent") || "",
+          ...(exception.stack && { stack: exception.stack }),
+        }
       );
+
+      const formattedLog = formatLogEntry(logEntry, this.isProduction);
+      this.logger.error(formattedLog);
     }
 
     const errorResponse = {

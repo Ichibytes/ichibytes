@@ -1,5 +1,6 @@
 export * from "./filters/http-exception.filter";
 export * from "./middleware/logger.middleware";
+export * from "./interceptors/logging.interceptor";
 export * from "./guards/jwt-auth.guard";
 export * from "./guards/roles.guard";
 export * from "./decorators/public.decorator";
@@ -8,3 +9,5 @@ export * from "./decorators/current-user.decorator";
 export * from "./decorators/skip-throttle.decorator";
 export * from "./strategies/jwt.strategy";
 export * from "./pipes/sanitize.pipe";
+export * from "./utils/logger.util";
+export * from "./utils/metrics.util";

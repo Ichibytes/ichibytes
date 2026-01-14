@@ -2,11 +2,13 @@ import { Logger, ValidationPipe, VersioningType } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app/app.module";
 import { HttpExceptionFilter } from "./core/filters/http-exception.filter";
+import { getLogLevels } from "./core/utils/logger.util";
 import helmet from "helmet";
 
 async function bootstrap() {
+  const logLevels = getLogLevels();
   const app = await NestFactory.create(AppModule, {
-    logger: ["error", "warn", "log", "debug", "verbose"],
+    logger: logLevels,
   });
 
   // Security Headers (Helmet)

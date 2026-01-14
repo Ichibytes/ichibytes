@@ -1,10 +1,10 @@
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
-import { APP_GUARD, APP_PIPE } from "@nestjs/core";
+import { Module } from "@nestjs/common";
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { PrismaModule } from "database";
-import { LoggerMiddleware } from "../core/middleware/logger.middleware";
+import { LoggingInterceptor } from "../core/interceptors/logging.interceptor";
 import { PublicModule } from "../public/public.module";
 import { AdminModule } from "../admin/admin.module";
 import { HealthModule } from "../health/health.module";
@@ -13,6 +13,7 @@ import { JwtAuthGuard } from "../core/guards/jwt-auth.guard";
 import { RolesGuard } from "../core/guards/roles.guard";
 import { CustomThrottleGuard } from "../core/guards/throttle.guard";
 import { SanitizePipe } from "../core/pipes/sanitize.pipe";
+import { MetricsController } from "../core/controllers/metrics.controller";
 
 @Module({
   imports: [
@@ -39,7 +40,7 @@ import { SanitizePipe } from "../core/pipes/sanitize.pipe";
     HealthModule,
     AuthModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, MetricsController],
   providers: [
     AppService,
     {
@@ -55,13 +56,13 @@ import { SanitizePipe } from "../core/pipes/sanitize.pipe";
       useClass: CustomThrottleGuard,
     },
     {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+    {
       provide: APP_PIPE,
       useClass: SanitizePipe,
     },
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes("{*splat}");
-  }
-}
+export class AppModule {}
