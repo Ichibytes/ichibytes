@@ -78,4 +78,14 @@ export class UpdatePostDto extends PartialType(CreatePostDto) {
   @IsOptional()
   @IsDateString()
   scheduledAt?: string;
+
+  @ApiProperty({
+    description:
+      "Expected updatedAt timestamp for optimistic concurrency control (ISO 8601). If provided, update will fail if post has been modified.",
+    example: "2025-01-14T10:00:00.000Z",
+    required: false,
+  })
+  @IsOptional()
+  @IsDateString()
+  expectedUpdatedAt?: string;
 }

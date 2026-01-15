@@ -13,6 +13,8 @@ import { PostsModule } from "../posts/posts.module";
 import { MediaModule } from "../media/media.module";
 import { ProjectsModule } from "../projects/projects.module";
 import { ContactModule } from "../contact/contact.module";
+import { TagsModule } from "../tags/tags.module";
+import { AuditLogModule } from "../audit/audit-log.module";
 import { JwtAuthGuard } from "../core/guards/jwt-auth.guard";
 import { RolesGuard } from "../core/guards/roles.guard";
 import { CustomThrottleGuard } from "../core/guards/throttle.guard";
@@ -47,6 +49,8 @@ import { MetricsController } from "../core/controllers/metrics.controller";
     MediaModule,
     ProjectsModule,
     ContactModule,
+    TagsModule,
+    AuditLogModule,
   ],
   controllers: [AppController, MetricsController],
   providers: [

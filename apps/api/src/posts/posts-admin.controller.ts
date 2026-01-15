@@ -116,13 +116,17 @@ export class PostsAdminController {
   @ApiOperation({
     summary: "Update post",
     description:
-      "Update an existing post. Automatically creates a revision if content changes.",
+      "Update an existing post. Automatically creates a revision if content changes. Supports optimistic concurrency control via expectedUpdatedAt field.",
   })
   @ApiParam({ name: "id", description: "Post ID", type: String })
   @ApiBody({ type: UpdatePostDto })
   @ApiResponse({
     status: 200,
     description: "Post updated successfully",
+  })
+  @ApiResponse({
+    status: 400,
+    description: "Validation error or optimistic concurrency conflict",
   })
   @ApiResponse({
     status: 404,

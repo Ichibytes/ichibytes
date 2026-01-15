@@ -185,6 +185,18 @@ export class PostsService {
       throw new NotFoundException(`Post with ID ${id} not found`);
     }
 
+    // Optimistic concurrency check
+    if (updatePostDto.expectedUpdatedAt) {
+      const expectedDate = new Date(updatePostDto.expectedUpdatedAt);
+      const actualDate = new Date(existingPost.updatedAt);
+
+      if (actualDate.getTime() !== expectedDate.getTime()) {
+        throw new BadRequestException(
+          "Post has been modified since you last viewed it. Please refresh and try again."
+        );
+      }
+    }
+
     let slug = existingPost.slug;
     if (updatePostDto.slug && updatePostDto.slug !== existingPost.slug) {
       slug = await this.ensureUniqueSlug(updatePostDto.slug, id);

@@ -35,14 +35,17 @@ import {
 import { UserRole } from "@prisma/client";
 import { PaginatedResponseDto } from "../core/dto/pagination.dto";
 
-@ApiTags("media")
+@ApiTags("admin")
 @ApiBearerAuth("JWT-auth")
-@Controller("api/v1/admin/media")
-@Roles(UserRole.ADMIN, UserRole.EDITOR)
+@Controller({
+  path: "admin/media",
+  version: "1",
+})
 export class MediaController {
   constructor(private readonly mediaService: MediaService) {}
 
   @Post("upload")
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @UseInterceptors(FileInterceptor("file"))
   @ApiOperation({
     summary: "Upload a file",
@@ -80,6 +83,7 @@ export class MediaController {
   }
 
   @Post("upload-url")
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: "Generate signed upload URL",
@@ -111,6 +115,7 @@ export class MediaController {
   }
 
   @Post("confirm-upload")
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: "Confirm file upload",
@@ -140,6 +145,7 @@ export class MediaController {
   }
 
   @Get()
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @ApiOperation({
     summary: "List all media",
     description: "Get a paginated list of all media files.",
@@ -154,6 +160,7 @@ export class MediaController {
   }
 
   @Get("stats")
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @ApiOperation({
     summary: "Get media statistics",
     description: "Get statistics about media files (total, size, by type).",
@@ -167,6 +174,7 @@ export class MediaController {
   }
 
   @Get("my")
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @ApiOperation({
     summary: "Get my media",
     description:
@@ -185,6 +193,7 @@ export class MediaController {
   }
 
   @Get(":id")
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @ApiOperation({
     summary: "Get media by ID",
     description: "Get a single media file by its ID.",
@@ -203,6 +212,7 @@ export class MediaController {
   }
 
   @Delete(":id")
+  @Roles(UserRole.ADMIN, UserRole.EDITOR)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: "Delete media",
