@@ -21,6 +21,37 @@ A PostgreSQL 16 database container for local development (latest stable version 
 postgresql://ichibytes:password@localhost:5432/ichibytes_dev?schema=public
 ```
 
+### MinIO (S3-Compatible Storage)
+
+MinIO provides S3-compatible object storage for media files.
+
+**Default Configuration:**
+
+- Root User: `minioadmin`
+- Root Password: `minioadmin`
+- API Port: `9000`
+- Console Port: `9001`
+
+**Access:**
+
+- API Endpoint: `http://localhost:9000`
+- Console UI: `http://localhost:9001`
+
+**First-time Setup:**
+
+1. Access the MinIO Console at `http://localhost:9001`
+2. Login with default credentials (minioadmin/minioadmin)
+3. Create a bucket named `ichibytes-media` (or configure `S3_BUCKET` in your `.env`)
+4. Update your `.env` file with MinIO credentials:
+
+```env
+S3_ACCESS_KEY_ID="minioadmin"
+S3_SECRET_ACCESS_KEY="minioadmin"
+S3_BUCKET="ichibytes-media"
+S3_REGION="us-east-1"
+S3_ENDPOINT="http://localhost:9000"
+```
+
 ### Optional Services
 
 The compose file includes commented-out services that can be enabled when needed:
@@ -72,13 +103,29 @@ Update your `.env` file in the workspace root:
 DATABASE_URL="postgresql://ichibytes:password@localhost:5432/ichibytes_dev?schema=public"
 ```
 
-### 5. Run Migrations
+### 5. Configure MinIO
+
+After starting MinIO, configure your workspace `.env` file with S3 settings:
+
+```env
+# S3-Compatible Storage (MinIO)
+S3_ACCESS_KEY_ID="minioadmin"
+S3_SECRET_ACCESS_KEY="minioadmin"
+S3_BUCKET="ichibytes-media"
+S3_REGION="us-east-1"
+S3_ENDPOINT="http://localhost:9000"
+S3_BASE_URL="" # Optional: Leave empty to use default MinIO URL
+```
+
+**Important:** After starting MinIO, access the console at `http://localhost:9001` and create a bucket named `ichibytes-media` (or the name you configured in `S3_BUCKET`).
+
+### 6. Run Migrations
 
 ```bash
 npm run db:migrate
 ```
 
-### 6. Seed Database
+### 7. Seed Database
 
 ```bash
 npm run db:seed
@@ -148,6 +195,7 @@ docker compose -f .docker/development/compose.yaml restart
 All data is stored in Docker volumes:
 
 - `postgres_data`: PostgreSQL database files
+- `minio_data`: MinIO object storage data
 - `pgadmin_data`: pgAdmin configuration (if enabled)
 - `redis_data`: Redis data (if enabled)
 

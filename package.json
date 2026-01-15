@@ -86,6 +86,7 @@
     "@testing-library/react": "16.3.0",
     "@types/bcrypt": "^6.0.0",
     "@types/jest": "^29.5.12",
+    "@types/multer": "^2.0.0",
     "@types/node": "^22.19.6",
     "@types/passport-jwt": "^4.0.1",
     "@types/react": "^18.3.27",
@@ -127,6 +128,8 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.969.0",
+    "@aws-sdk/s3-request-presigner": "^3.969.0",
     "@nestjs/common": "^11.1.11",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.11",
@@ -142,12 +145,14 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.3",
     "helmet": "^8.1.0",
+    "multer": "^2.0.2",
     "next": "^15.5.9",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "sharp": "^0.34.5"
   },
   "overrides": {
     "hono": "^4.11.4"
