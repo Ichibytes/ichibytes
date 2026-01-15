@@ -117,10 +117,14 @@ async function bootstrap() {
       swaggerOptions: {
         persistAuthorization: true,
       },
+      jsonDocumentUrl: "api/docs-json",
     });
 
     logger.log(
       `Swagger documentation available at: http://localhost:${process.env.PORT || 3000}/api/docs`
+    );
+    logger.log(
+      `OpenAPI JSON schema available at: http://localhost:${process.env.PORT || 3000}/api/docs-json`
     );
   }
 

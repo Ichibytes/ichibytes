@@ -58,7 +58,10 @@ dist/
 # Note: schema.prisma and migrations should be committed
 # Only ignore generated client and other generated files
 **/node_modules/.prisma/
-**/generated/
+# Allow generated directory structure but ignore generated files
+libs/api-client/src/lib/generated/*.json
+libs/api-client/src/lib/generated/*.ts
+!libs/api-client/src/lib/generated/.gitkeep
 
 # ============================================
 # Testing
