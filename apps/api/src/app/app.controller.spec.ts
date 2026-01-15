@@ -13,9 +13,18 @@ describe("AppController", () => {
   });
 
   describe("getData", () => {
-    it('should return "Hello API"', () => {
+    it("should return API information with message, version, and endpoints", () => {
       const appController = app.get<AppController>(AppController);
-      expect(appController.getData()).toEqual({ message: "Hello API" });
+      expect(appController.getData()).toEqual({
+        message: "Ichibytes API",
+        version: "v1",
+        endpoints: {
+          public: "/api/v1/public",
+          admin: "/api/v1/admin",
+          auth: "/api/v1/admin/auth",
+          health: "/api/v1/health",
+        },
+      });
     });
   });
 });
