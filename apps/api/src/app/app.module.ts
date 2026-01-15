@@ -9,6 +9,7 @@ import { PublicModule } from "../public/public.module";
 import { AdminModule } from "../admin/admin.module";
 import { HealthModule } from "../health/health.module";
 import { AuthModule } from "../auth/auth.module";
+import { PostsModule } from "../posts/posts.module";
 import { JwtAuthGuard } from "../core/guards/jwt-auth.guard";
 import { RolesGuard } from "../core/guards/roles.guard";
 import { CustomThrottleGuard } from "../core/guards/throttle.guard";
@@ -39,6 +40,7 @@ import { MetricsController } from "../core/controllers/metrics.controller";
     AdminModule,
     HealthModule,
     AuthModule,
+    PostsModule,
   ],
   controllers: [AppController, MetricsController],
   providers: [
