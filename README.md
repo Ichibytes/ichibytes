@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/assets/ichibytes-logo.png" alt="Ichibytes Logo" width="200" />
+  <img src="docs/assets/ichibytes-logo-rounded.png" alt="Ichibytes Logo" width="200" />
   
   # Ichibytes.dev
   
