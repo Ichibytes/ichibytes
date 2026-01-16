@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { LinkButton } from "./link-button";
-import { Icon } from "../icon/icon";
+import { Icon } from "../icon";
 import { ExternalLink, Github, ArrowRight } from "lucide-react";
 
 const meta: Meta<typeof LinkButton> = {

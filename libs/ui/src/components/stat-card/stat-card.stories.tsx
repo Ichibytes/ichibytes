@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { StatCard } from "./stat-card";
-import { Icon } from "../icon/icon";
+import { Icon } from "../icon";
 import { Layout, FileText, Palette } from "lucide-react";
 
 const meta: Meta<typeof StatCard> = {
