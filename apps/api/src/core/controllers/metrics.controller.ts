@@ -1,4 +1,4 @@
-import { Controller, Get, Version } from "@nestjs/common";
+import { Controller, Get } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { Public } from "../decorators/public.decorator";
 import { metricsCollector } from "../utils/metrics.util";

@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Version,
-  HttpCode,
-  HttpStatus,
-} from "@nestjs/common";
+import { Controller, Post, Body, HttpCode, HttpStatus } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 import { AuthService } from "./auth.service";
@@ -114,7 +107,7 @@ export class AuthController {
     status: 401,
     description: "Unauthorized",
   })
-  async logout(@CurrentUser() user: CurrentUserPayload) {
+  async logout(@CurrentUser() _user: CurrentUserPayload) {
     // Since we're using stateless JWT tokens, we can't invalidate them server-side
     // without implementing a token blacklist (e.g., using Redis or database)
     // For now, we just return success and the client should discard the tokens

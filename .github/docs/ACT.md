@@ -83,6 +83,7 @@ act push --skip-job security
 - Some GitHub Actions may not work perfectly locally (e.g., artifact uploads)
 - Actions that require GitHub API access may need secrets configured
 - The core Nx commands (`nx affected`, `nx build`, etc.) execute correctly
+- **Security Audit job**: Known issue with `act` and Node.js 22 where npm is not found after installation. Skip this job when testing locally: `act push --skip-job security`
 
 ## Tips
 

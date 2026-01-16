@@ -21,6 +21,13 @@
       "options": {
         "jestConfig": "libs/api-client/jest.config.ts"
       }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/api-client/**/*.ts"]
+      }
     }
   }
 }

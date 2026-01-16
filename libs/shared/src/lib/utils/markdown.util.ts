@@ -31,10 +31,7 @@ export function extractPlainText(markdown: string): string {
  * @param maxLength - Maximum length of the excerpt (default: 200)
  * @returns An excerpt of the markdown content
  */
-export function generateExcerpt(
-  markdown: string,
-  maxLength: number = 200
-): string {
+export function generateExcerpt(markdown: string, maxLength = 200): string {
   const plainText = extractPlainText(markdown);
 
   if (plainText.length <= maxLength) {
@@ -71,7 +68,7 @@ export function countWords(markdown: string): number {
  */
 export function estimateReadingTime(
   markdown: string,
-  wordsPerMinute: number = 200
+  wordsPerMinute = 200
 ): number {
   const wordCount = countWords(markdown);
   return Math.ceil(wordCount / wordsPerMinute);

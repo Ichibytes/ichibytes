@@ -191,11 +191,12 @@ export class ApiClient {
     config?: AxiosRequestConfig
   ): Promise<ApiResponse<T>> {
     const response = await this.client.post<T>(url, data, config);
-    const responseData = response.data as any;
+    const responseData = response.data as unknown;
 
     if (
       responseData &&
       typeof responseData === "object" &&
+      responseData !== null &&
       "data" in responseData &&
       "meta" in responseData
     ) {
@@ -213,11 +214,12 @@ export class ApiClient {
     config?: AxiosRequestConfig
   ): Promise<ApiResponse<T>> {
     const response = await this.client.patch<T>(url, data, config);
-    const responseData = response.data as any;
+    const responseData = response.data as unknown;
 
     if (
       responseData &&
       typeof responseData === "object" &&
+      responseData !== null &&
       "data" in responseData &&
       "meta" in responseData
     ) {
@@ -235,11 +237,12 @@ export class ApiClient {
     config?: AxiosRequestConfig
   ): Promise<ApiResponse<T>> {
     const response = await this.client.put<T>(url, data, config);
-    const responseData = response.data as any;
+    const responseData = response.data as unknown;
 
     if (
       responseData &&
       typeof responseData === "object" &&
+      responseData !== null &&
       "data" in responseData &&
       "meta" in responseData
     ) {
@@ -294,11 +297,12 @@ export class ApiClient {
       },
     });
 
-    const responseData = response.data as any;
+    const responseData = response.data as unknown;
 
     if (
       responseData &&
       typeof responseData === "object" &&
+      responseData !== null &&
       "data" in responseData &&
       "meta" in responseData
     ) {

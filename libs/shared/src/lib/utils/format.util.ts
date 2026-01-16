@@ -16,8 +16,8 @@ export function formatNumber(value: number): string {
  */
 export function formatCurrency(
   value: number,
-  currency: string = "USD",
-  locale: string = "en-US"
+  currency = "USD",
+  locale = "en-US"
 ): string {
   return new Intl.NumberFormat(locale, {
     style: "currency",
@@ -65,7 +65,7 @@ export function formatDuration(milliseconds: number): string {
 export function truncate(
   text: string,
   maxLength: number,
-  suffix: string = "..."
+  suffix = "..."
 ): string {
   if (text.length <= maxLength) {
     return text;
@@ -95,7 +95,7 @@ export function toTitleCase(text: string): string {
 /**
  * Formats a percentage value
  */
-export function formatPercentage(value: number, decimals: number = 0): string {
+export function formatPercentage(value: number, decimals = 0): string {
   return `${value.toFixed(decimals)}%`;
 }
 

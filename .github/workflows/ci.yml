@@ -30,7 +30,7 @@ jobs:
 
       - name: Lint projects
         run: npx nx run-many --target=lint --all
-        continue-on-error: true
+        continue-on-error: false
 
       - name: Test affected projects
         run: npx nx run-many --target=test --all
@@ -38,6 +38,10 @@ jobs:
 
       - name: Build affected projects
         run: npx nx run-many --target=build --all --configuration=production
+        continue-on-error: false
+
+      - name: Build Storybook
+        run: npx nx build-storybook ui --configuration=ci
         continue-on-error: false
 
       - name: Upload test results

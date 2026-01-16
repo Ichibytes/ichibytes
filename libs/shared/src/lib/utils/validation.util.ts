@@ -37,7 +37,7 @@ export function isValidURL(url: string): boolean {
  * Validates phone number format (basic validation)
  */
 export function isValidPhone(phone: string): boolean {
-  const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+  const phoneRegex = /^[\d\s\-+()]+$/;
   return phoneRegex.test(phone) && phone.replace(/\D/g, "").length >= 10;
 }
 
@@ -49,7 +49,7 @@ export function isValidPhone(phone: string): boolean {
  */
 export function validatePassword(
   password: string,
-  minLength: number = 8
+  minLength = 8
 ): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
 
