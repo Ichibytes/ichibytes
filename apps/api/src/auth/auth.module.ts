@@ -5,6 +5,7 @@ import type ms from "ms";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { PrismaModule } from "database";
+import { apiConfig } from "@ichibytes/config";
 import { JwtStrategy } from "../core/strategies/jwt.strategy";
 
 @Module({
@@ -12,11 +13,9 @@ import { JwtStrategy } from "../core/strategies/jwt.strategy";
     PrismaModule,
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || "your-secret-key-change-in-production",
+      secret: apiConfig.JWT_SECRET,
       signOptions: {
-        expiresIn: (process.env.JWT_EXPIRES_IN || "15m") as
-          | ms.StringValue
-          | number,
+        expiresIn: apiConfig.JWT_EXPIRES_IN as ms.StringValue | number,
       },
     }),
   ],

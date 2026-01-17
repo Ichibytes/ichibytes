@@ -4,6 +4,7 @@ import { ThrottlerModule } from "@nestjs/throttler";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { PrismaModule } from "database";
+import { IchibytesConfigModule, apiConfig } from "@ichibytes/config";
 import { LoggingInterceptor } from "../core/interceptors/logging.interceptor";
 import { PublicModule } from "../public/public.module";
 import { AdminModule } from "../admin/admin.module";
@@ -23,22 +24,13 @@ import { MetricsController } from "../core/controllers/metrics.controller";
 
 @Module({
   imports: [
+    IchibytesConfigModule,
     PrismaModule,
     ThrottlerModule.forRoot([
       {
         name: "short",
-        ttl: 60000, // 1 minute
-        limit: 100, // 100 requests per minute (public endpoints)
-      },
-      {
-        name: "medium",
-        ttl: 600000, // 10 minutes
-        limit: 200, // 200 requests per 10 minutes (public endpoints)
-      },
-      {
-        name: "long",
-        ttl: 3600000, // 1 hour
-        limit: 1000, // 1000 requests per hour (public endpoints)
+        ttl: apiConfig.THROTTLE_TTL, // Default: 60000ms (1 minute)
+        limit: apiConfig.THROTTLE_LIMIT, // Default: 100 requests
       },
     ]),
     PublicModule,

@@ -7,13 +7,14 @@ import {
   Logger,
 } from "@nestjs/common";
 import { Request, Response } from "express";
+import { apiConfig } from "@ichibytes/config";
 import { createStructuredLog, formatLogEntry } from "../utils/logger.util";
 import { metricsCollector } from "../utils/metrics.util";
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
-  private readonly isProduction = process.env.NODE_ENV === "production";
+  private readonly isProduction = apiConfig.NODE_ENV === "production";
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();

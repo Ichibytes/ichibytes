@@ -76,9 +76,6 @@
     }
   },
   "defaultBase": "main",
-  "affected": {
-    "defaultBase": "main"
-  },
   "plugins": [
     {
       "plugin": "@nx/next/plugin",

@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app/app.module";
 import { HttpExceptionFilter } from "./core/filters/http-exception.filter";
 import { getLogLevels } from "./core/utils/logger.util";
+import { apiConfig } from "@ichibytes/config";
 import helmet from "helmet";
 
 async function bootstrap() {
@@ -40,10 +41,9 @@ async function bootstrap() {
   });
 
   // CORS Configuration
-  const allowedOrigins = [
-    process.env.ADMIN_URL || "http://localhost:4200",
-    process.env.WEB_URL || "http://localhost:3000",
-  ].filter(Boolean);
+  const allowedOrigins = [apiConfig.ADMIN_URL, apiConfig.WEB_URL].filter(
+    Boolean
+  );
 
   app.enableCors({
     origin: (origin, callback) => {
@@ -79,7 +79,7 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true, // Enable implicit type conversion
       },
-      disableErrorMessages: process.env.NODE_ENV === "production", // Disable detailed error messages in production
+      disableErrorMessages: apiConfig.NODE_ENV === "production", // Disable detailed error messages in production
     })
   );
 
@@ -87,12 +87,12 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   // Swagger/OpenAPI Documentation
-  if (process.env.NODE_ENV !== "production") {
+  if (apiConfig.NODE_ENV !== "production") {
     const config = new DocumentBuilder()
       .setTitle("Ichibytes API")
       .setDescription("API documentation for Ichibytes website")
       .setVersion("1.0")
-      .addServer(`http://localhost:${process.env.PORT || 3000}`, "Development")
+      .addServer(`http://localhost:${apiConfig.PORT}`, "Development")
       .addServer("https://api.ichibytes.dev", "Production")
       .addBearerAuth(
         {
@@ -121,22 +121,21 @@ async function bootstrap() {
     });
 
     logger.log(
-      `Swagger documentation available at: http://localhost:${process.env.PORT || 3000}/api/docs`
+      `Swagger documentation available at: http://localhost:${apiConfig.PORT}/api/docs`
     );
     logger.log(
-      `OpenAPI JSON schema available at: http://localhost:${process.env.PORT || 3000}/api/docs-json`
+      `OpenAPI JSON schema available at: http://localhost:${apiConfig.PORT}/api/docs-json`
     );
   }
 
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
+  await app.listen(apiConfig.PORT, apiConfig.HOST);
 
   logger.log(
-    `Application is running on: http://localhost:${port}/${globalPrefix}`
+    `Application is running on: http://localhost:${apiConfig.PORT}/${globalPrefix}`
   );
   logger.log(`API Version: v1`);
   logger.log(`CORS enabled for: ${allowedOrigins.join(", ")}`);
-  logger.log(`Environment: ${process.env.NODE_ENV || "development"}`);
+  logger.log(`Environment: ${apiConfig.NODE_ENV}`);
 }
 
 bootstrap();

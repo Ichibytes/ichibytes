@@ -1,4 +1,5 @@
 import { LoggerService } from "@nestjs/common";
+import { apiConfig } from "@ichibytes/config";
 
 /**
  * Structured log entry interface
@@ -60,25 +61,22 @@ export function getLogLevels(): (
   | "debug"
   | "verbose"
 )[] {
-  const env = process.env.NODE_ENV || "development";
-  const logLevel = process.env.LOG_LEVEL?.toLowerCase();
+  const logLevel = apiConfig.LOG_LEVEL.toLowerCase();
 
-  if (logLevel) {
-    const levels = ["error", "warn", "log", "debug", "verbose"];
-    const index = levels.indexOf(logLevel);
-    if (index !== -1) {
-      return levels.slice(0, index + 1) as (
-        | "error"
-        | "warn"
-        | "log"
-        | "debug"
-        | "verbose"
-      )[];
-    }
+  const levels = ["error", "warn", "log", "debug", "verbose"];
+  const index = levels.indexOf(logLevel);
+  if (index !== -1) {
+    return levels.slice(0, index + 1) as (
+      | "error"
+      | "warn"
+      | "log"
+      | "debug"
+      | "verbose"
+    )[];
   }
 
   // Default levels per environment
-  if (env === "production") {
+  if (apiConfig.NODE_ENV === "production") {
     return ["error", "warn", "log"];
   }
 

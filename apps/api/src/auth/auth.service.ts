@@ -6,6 +6,7 @@ import {
 import { JwtService } from "@nestjs/jwt";
 import type ms from "ms";
 import { PrismaService } from "database";
+import { apiConfig } from "@ichibytes/config";
 import * as bcrypt from "bcrypt";
 import { LoginDto } from "./dto/login.dto";
 import { JwtPayload } from "../core/strategies/jwt.strategy";
@@ -55,15 +56,11 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: (process.env.JWT_EXPIRES_IN || "15m") as
-        | ms.StringValue
-        | number,
+      expiresIn: apiConfig.JWT_EXPIRES_IN as ms.StringValue | number,
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN || "7d") as
-        | ms.StringValue
-        | number,
+      expiresIn: apiConfig.JWT_REFRESH_EXPIRES_IN as ms.StringValue | number,
     });
 
     return {
@@ -104,9 +101,7 @@ export class AuthService {
       };
 
       const newAccessToken = this.jwtService.sign(newPayload, {
-        expiresIn: (process.env.JWT_EXPIRES_IN || "15m") as
-          | ms.StringValue
-          | number,
+        expiresIn: apiConfig.JWT_EXPIRES_IN as ms.StringValue | number,
       });
 
       return {

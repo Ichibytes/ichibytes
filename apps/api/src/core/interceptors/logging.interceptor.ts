@@ -8,13 +8,14 @@ import {
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 import { Request, Response } from "express";
+import { apiConfig } from "@ichibytes/config";
 import { createStructuredLog, formatLogEntry } from "../utils/logger.util";
 import { metricsCollector } from "../utils/metrics.util";
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger("HTTP");
-  private readonly isProduction = process.env.NODE_ENV === "production";
+  private readonly isProduction = apiConfig.NODE_ENV === "production";
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const request = context.switchToHttp().getRequest<Request>();

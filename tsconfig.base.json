@@ -18,7 +18,10 @@
       "shared": ["libs/shared/src/index.ts"],
       "ui": ["libs/ui/src/index.ts"],
       "api-client": ["libs/api-client/src/index.ts"],
-      "database": ["libs/database/src/index.ts"]
+      "database": ["libs/database/src/index.ts"],
+      "@ichibytes/config": ["libs/config/src/index.ts"],
+      "@ichibytes/config/web": ["libs/config/src/web.ts"],
+      "@ichibytes/config/admin": ["libs/config/src/admin.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
