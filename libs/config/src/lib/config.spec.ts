@@ -85,22 +85,41 @@ describe("Config Validation", () => {
       expect(config.NODE_ENV).toBe("development");
       expect(config.NEXT_PUBLIC_API_URL).toBe("http://localhost:3000/api/v1");
       expect(config.NEXT_PUBLIC_SITE_URL).toBe("http://localhost:3001");
-      expect(config.NEXT_PUBLIC_ENABLE_COMMENTS).toBe(false);
+      expect(config.NEXT_PORT).toBe(3001);
+      expect(config.NEXT_HOST).toBe("localhost");
     });
 
-    it("should transform boolean feature flags", () => {
+    it("should validate with custom values", () => {
       process.env = {
         NODE_ENV: "production",
         NEXT_PUBLIC_API_URL: "https://api.ichibytes.dev/api/v1",
         NEXT_PUBLIC_SITE_URL: "https://ichibytes.dev",
-        NEXT_PUBLIC_ENABLE_COMMENTS: "true",
-        NEXT_PUBLIC_ENABLE_NEWSLETTER: "true",
+        NEXT_PORT: "3002",
+        NEXT_HOST: "0.0.0.0",
       };
 
       const config = validateWebEnv();
 
-      expect(config.NEXT_PUBLIC_ENABLE_COMMENTS).toBe(true);
-      expect(config.NEXT_PUBLIC_ENABLE_NEWSLETTER).toBe(true);
+      expect(config.NODE_ENV).toBe("production");
+      expect(config.NEXT_PUBLIC_API_URL).toBe(
+        "https://api.ichibytes.dev/api/v1"
+      );
+      expect(config.NEXT_PUBLIC_SITE_URL).toBe("https://ichibytes.dev");
+      expect(config.NEXT_PORT).toBe(3002);
+      expect(config.NEXT_HOST).toBe("0.0.0.0");
+    });
+
+    it("should validate optional analytics fields", () => {
+      process.env = {
+        NODE_ENV: "production",
+        NEXT_PUBLIC_GA_MEASUREMENT_ID: "G-XXXXXXXXXX",
+        NEXT_PUBLIC_PLAUSIBLE_DOMAIN: "ichibytes.dev",
+      };
+
+      const config = validateWebEnv();
+
+      expect(config.NEXT_PUBLIC_GA_MEASUREMENT_ID).toBe("G-XXXXXXXXXX");
+      expect(config.NEXT_PUBLIC_PLAUSIBLE_DOMAIN).toBe("ichibytes.dev");
     });
   });
 
